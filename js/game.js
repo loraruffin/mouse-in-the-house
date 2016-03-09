@@ -58,7 +58,7 @@
                 wMonster       = [];
             
             //Particles    
-            	particles      = undefined,
+            	particles          = undefined,
             	geometry	   = undefined,
             	materials 	   = [],
             	parameters	   = undefined,
@@ -68,14 +68,14 @@
             
             //Sounds
             	var soundSpace         = new buzz.sound('../sounds/space.wav' );
-           		var soundBang          = new buzz.sound('../sounds/hit1.wav' );     
+           	var soundBang          = new buzz.sound('../sounds/hit1.wav' );     
             	var soundCollect       = new buzz.sound('../sounds/collect.wav' );
-            	var soundEnd       	   = new buzz.sound('../sounds/end.wav' );
+            	var soundEnd           = new buzz.sound('../sounds/end.wav' );
 
             
 
             
-            function createPhysicsWorld() {
+        function createPhysicsWorld() {
             
                 // Create the world object.
                 wWorld = new b2World(new b2Vec2(0, 0), true);
@@ -101,13 +101,13 @@
                 fixDef.friction = 0.0;
                 fixDef.restitution = 0.25;
                 fixDef.shape = new b2CircleShape(ballRadius);
-			   	for (var i = 0; i < ballPosition.length; i++) {
-					bodyDef.position.x = ballPosition[i][0];
-					bodyDef.position.y = ballPosition[i][1];
-					wBall[i] = wWorld.CreateBody(bodyDef);           
-					wBall[i].CreateFixture(fixDef);                            
-					wBall[i].SetUserData("ball");
-				}
+		for (var i = 0; i < ballPosition.length; i++) {
+			bodyDef.position.x = ballPosition[i][0];
+			bodyDef.position.y = ballPosition[i][1];
+			wBall[i] = wWorld.CreateBody(bodyDef);           
+			wBall[i].CreateFixture(fixDef);                            
+			wBall[i].SetUserData("ball");
+		}
 
                 
                 //Create cheese
@@ -119,12 +119,12 @@
                 fixDef.restitution = 0.25;
                 fixDef.shape = new b2CircleShape(ballRadius);
                 for (var i = 0; i < cheesePosition.length; i++) {
-                            bodyDef.position.x = cheesePosition[i][0];
-                            bodyDef.position.y = cheesePosition[i][1];
-                            wCheese = wWorld.CreateBody(bodyDef);           
-                			wCheese.CreateFixture(fixDef);                            
-                            wCheese.SetUserData("cheese");
-                    }
+                        bodyDef.position.x = cheesePosition[i][0];
+                        bodyDef.position.y = cheesePosition[i][1];
+                        wCheese = wWorld.CreateBody(bodyDef);           
+                 	wCheese.CreateFixture(fixDef);                            
+                        wCheese.SetUserData("cheese");
+                }
                     
             	//Create monsters
                 var bodyDef = new b2BodyDef();
@@ -135,11 +135,11 @@
                 fixDef.restitution = 0.25;
                 fixDef.shape = new b2CircleShape(ballRadius);
                 for (var i = 0; i < monsterPosition.length; i++) {
-                            bodyDef.position.x = monsterPosition[i][0];
-                            bodyDef.position.y = monsterPosition[i][1];
-                            wMonster[i] = wWorld.CreateBody(bodyDef);           
-                			wMonster[i].CreateFixture(fixDef);                            
-                            wMonster[i].SetUserData("monster");
+                        bodyDef.position.x = monsterPosition[i][0];
+                        bodyDef.position.y = monsterPosition[i][1];
+                        wMonster[i] = wWorld.CreateBody(bodyDef);           
+                	wMonster[i].CreateFixture(fixDef);                            
+                        wMonster[i].SetUserData("monster");
                 }
                 
                 // Create the maze.
@@ -161,63 +161,61 @@
                 
                 
                 // Add listeners for contact
-				var listener = new Box2D.Dynamics.b2ContactListener;
+		var listener = new Box2D.Dynamics.b2ContactListener;
  
-				listener.BeginContact = function(contact) {
-					//Mouse + Cheese
-    				if (contact.GetFixtureA().GetBody().GetUserData() == 'mouse' && contact.GetFixtureB().GetBody().GetUserData() == 'cheese'){
-  			            	var i =  Math.floor(contact.GetFixtureB().GetBody().GetPosition().x);
-                        	var j =  Math.floor(contact.GetFixtureB().GetBody().GetPosition().y);
-                        	//return index of a nested array
-                        	var a = index(cheesePosition,i,j)
- 							scene.remove(cheeseMesh[a]);
- 							destroy_list.push(contact.GetFixtureB().GetBody());
- 							cheeseCount++;
- 							soundCollect.play();
-         	   		}      	   	
-         	   		//Mouse + Monster
-         	   		if (contact.GetFixtureA().GetBody().GetUserData() == 'mouse' && contact.GetFixtureB().GetBody().GetUserData() == 'monster'){
-                        	time = 150;
-                        	gameState = 'fade out';
-                        	scene.remove(mouseMesh);
-                        	soundSpace.play();
- 					}
- 					//Monster + Mouse
- 					if (contact.GetFixtureA().GetBody().GetUserData() == 'monster' && contact.GetFixtureB().GetBody().GetUserData() == 'mouse'){
-                        	time = 150;
-                        	gameState = 'fade out';
-                        	scene.remove(mouseMesh);
-                        	soundSpace.play();
- 					}
- 					//Ball + Monster
- 					if (contact.GetFixtureA().GetBody().GetUserData() == 'ball' && contact.GetFixtureB().GetBody().GetUserData() == 'monster'){
-  			            	var i =  Math.floor(contact.GetFixtureB().GetBody().GetPosition().x);
-                        	var j =  Math.floor(contact.GetFixtureB().GetBody().GetPosition().y);
-                        	//return index of a nested array
-                        	var a = index(monsterPosition,-1,j)
-                			soundBang.play();
- 							scene.remove(monsterMesh[a]);
- 							destroy_list.push(contact.GetFixtureB().GetBody());
-                	}
-                	 //Monster + Ball
-                	 if (contact.GetFixtureA().GetBody().GetUserData() == 'monster' && contact.GetFixtureB().GetBody().GetUserData() == 'ball'){
-  			            	var i =  Math.floor(contact.GetFixtureA().GetBody().GetPosition().x);
-                        	var j =  Math.floor(contact.GetFixtureA().GetBody().GetPosition().y);
-                        	//return index of a nested array
-                        	var a = index(monsterPosition,-1,j)
-                			soundBang.play();
- 							scene.remove(monsterMesh[a]);
- 							destroy_list.push(contact.GetFixtureA().GetBody());
-                	}
+		listener.BeginContact = function(contact) {
+			//Mouse + Cheese
+	    		if (contact.GetFixtureA().GetBody().GetUserData() == 'mouse' && contact.GetFixtureB().GetBody().GetUserData() == 'cheese'){
+	  			var i =  Math.floor(contact.GetFixtureB().GetBody().GetPosition().x);
+	                        var j =  Math.floor(contact.GetFixtureB().GetBody().GetPosition().y);
+	                        //return index of a nested array
+	                        var a = index(cheesePosition,i,j)
+	 			scene.remove(cheeseMesh[a]);
+	 			destroy_list.push(contact.GetFixtureB().GetBody());
+	 			cheeseCount++;
+	 			soundCollect.play();
+	        	}      	   	
+	         	//Mouse + Monster
+	         	if (contact.GetFixtureA().GetBody().GetUserData() == 'mouse' && contact.GetFixtureB().GetBody().GetUserData() == 'monster'){
+	                        time = 150;
+	                        gameState = 'fade out';
+	                        scene.remove(mouseMesh);
+	                        soundSpace.play();
+	 		}
+	 		//Monster + Mouse
+	 		if (contact.GetFixtureA().GetBody().GetUserData() == 'monster' && contact.GetFixtureB().GetBody().GetUserData() == 'mouse'){
+	                        time = 150;
+	                       	gameState = 'fade out';
+	                       	scene.remove(mouseMesh);
+	                       	soundSpace.play();
+	 		}
+	 		//Ball + Monster
+			if (contact.GetFixtureA().GetBody().GetUserData() == 'ball' && contact.GetFixtureB().GetBody().GetUserData() == 'monster'){
+	  	            	var i =  Math.floor(contact.GetFixtureB().GetBody().GetPosition().x);
+	                       	var j =  Math.floor(contact.GetFixtureB().GetBody().GetPosition().y);
+	                       	//return index of a nested array
+	                        var a = index(monsterPosition,-1,j)
+	                	soundBang.play();
+	 			scene.remove(monsterMesh[a]);
+	 			destroy_list.push(contact.GetFixtureB().GetBody());
+			}
+	                //Monster + Ball
+	                 if (contact.GetFixtureA().GetBody().GetUserData() == 'monster' && contact.GetFixtureB().GetBody().GetUserData() == 'ball'){
+	  			var i =  Math.floor(contact.GetFixtureA().GetBody().GetPosition().x);
+	                        var j =  Math.floor(contact.GetFixtureA().GetBody().GetPosition().y);
+	                        //return index of a nested array
+	                        var a = index(monsterPosition,-1,j)
+	                	soundBang.play();
+	 			scene.remove(monsterMesh[a]);
+	 			destroy_list.push(contact.GetFixtureA().GetBody());
+	                }
                 	
          	   		    	   	
-         	   	}
+        	}
          	   	
-				// set contact listener to the world
-				wWorld.SetContactListener(listener);
-
-
-            }
+		// set contact listener to the world
+		wWorld.SetContactListener(listener);
+	}
             
     
             function generate_maze_mesh(field) {
@@ -231,17 +229,17 @@
                             mesh_ij.position.y = j;
                             mesh_ij.position.z = 0.5;
                             mesh_ij.updateMatrix();
-							temp.merge( mesh_ij.geometry, mesh_ij.matrix);
+			    temp.merge( mesh_ij.geometry, mesh_ij.matrix);
                         }
                     }
                 }
 		
-				var material =
-					new THREE.MeshPhongMaterial( {
-						color: 0xBDA0CB,
-						bumpMap: brickTexture,		
-						bumpScale: 0.05
-					});
+		var material =
+			new THREE.MeshPhongMaterial( {
+				color: 0xBDA0CB,
+				bumpMap: brickTexture,		
+				bumpScale: 0.05
+			});
                 var mesh = new THREE.Mesh(temp, material);
                 scene.add(mesh);             
             }
@@ -252,7 +250,7 @@
             	//Scene and camera
                 var aspect = window.innerWidth/window.innerHeight;
                 scene = new THREE.Scene();				
-				camera = new THREE.PerspectiveCamera(60, aspect, 1, 10000);
+		camera = new THREE.PerspectiveCamera(60, aspect, 1, 10000);
 	
                 // Add the light.
                 light= new THREE.PointLight(0xffffff, 1);
@@ -335,10 +333,10 @@
 					scene.add(cheeseMesh[i] );
 				}
 				
-				//Monster							
+			//Monster							
         		var g = new THREE.SphereGeometry( ballRadius*1.2, 32, 16);
-				var bumpTexture = pineappleTexture;
-				var bumpScale   = 0.02;
+			var bumpTexture = pineappleTexture;
+			var bumpScale   = 0.02;
         		var m = new THREE.MeshPhongMaterial({color: 0x33CC33,bumpMap: pineappleTexture,bumpScale: 0.02});
         		var g1 = new THREE.SphereGeometry( ballRadius/3, 32, 16);
         		var m1 = new THREE.MeshPhongMaterial({color: 0xE6E6E6});
