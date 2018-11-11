@@ -1,3 +1,4 @@
+
 var camera = undefined,
     scene = undefined,
     renderer = undefined,
@@ -701,7 +702,6 @@ function onMoveKey(axis) {
         w++;
     }
 }
-
 
 function init() {
     // Create the renderer.
